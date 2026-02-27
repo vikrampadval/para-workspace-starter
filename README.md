@@ -39,8 +39,13 @@ my-workspace/
 ├── 01_projects/           # Active work with deadlines
 │   └── PROJECT_TEMPLATE.md
 ├── 02_areas/              # Ongoing responsibilities (no end date)
+│   ├── hpms/              # Highlights, Priorities updates
+│   ├── career/            # Career planning
+│   ├── learning/          # Learning notes
+│   └── team/              # Team-related notes
 ├── 03_resources/          # Reference material
-│   └── people/            # Colleague notes
+│   ├── people/            # Colleague profiles
+│   └── templates/         # Reusable templates
 └── 04_archives/           # Completed / inactive work
 ```
 

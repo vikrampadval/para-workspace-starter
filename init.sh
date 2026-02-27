@@ -161,8 +161,12 @@ echo ""
 mkdir -p "$WORKSPACE_DIR/00_inbox/meetings"
 mkdir -p "$WORKSPACE_DIR/00_inbox/incubator"
 mkdir -p "$WORKSPACE_DIR/01_projects"
-mkdir -p "$WORKSPACE_DIR/02_areas"
+mkdir -p "$WORKSPACE_DIR/02_areas/hpms"
+mkdir -p "$WORKSPACE_DIR/02_areas/career"
+mkdir -p "$WORKSPACE_DIR/02_areas/learning"
+mkdir -p "$WORKSPACE_DIR/02_areas/team"
 mkdir -p "$WORKSPACE_DIR/03_resources/people"
+mkdir -p "$WORKSPACE_DIR/03_resources/templates"
 mkdir -p "$WORKSPACE_DIR/04_archives"
 
 # ============================================================
@@ -215,8 +219,13 @@ workspace/
 │   └── incubator/           # Ideas not ready to start
 ├── 01_projects/             # Active work with deadlines
 ├── 02_areas/                # Ongoing responsibilities
+│   ├── hpms/                # Highlights, Priorities updates
+│   ├── career/              # Career planning
+│   ├── learning/            # Learning notes
+│   └── team/                # Team-related notes
 ├── 03_resources/            # Reference material
-│   └── people/              # Colleague notes
+│   ├── people/              # Colleague profiles
+│   └── templates/           # Reusable templates
 └── 04_archives/             # Completed / inactive work
 \`\`\`
 
