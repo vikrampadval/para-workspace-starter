@@ -69,6 +69,11 @@ The init script fills in your profile, writing style, and acronyms based on your
 
 **Writing Style** is the highest-impact section — this is what makes AI drafts sound like you instead of generic AI.
 
+**Pro tip**: Drop example docs into your workspace — PRDs, strategy docs, status updates, writing samples — and ask the AI to analyze them. It can extract your writing patterns, flesh out your Writing Style section, and create reusable templates in `03_resources/templates/`. Try:
+- *"Here's a PRD I wrote — update my Writing Style section based on how I write"*
+- *"Create a PRD template from this example"*
+- *"Analyze these 3 docs and tell me what patterns you see in my writing"*
+
 ### 2. Create your first project (if you skipped it)
 
 ```bash
