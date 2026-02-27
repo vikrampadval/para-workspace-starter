@@ -161,7 +161,7 @@ echo ""
 mkdir -p "$WORKSPACE_DIR/00_inbox/meetings"
 mkdir -p "$WORKSPACE_DIR/00_inbox/incubator"
 mkdir -p "$WORKSPACE_DIR/01_projects"
-mkdir -p "$WORKSPACE_DIR/02_areas/hpms"
+mkdir -p "$WORKSPACE_DIR/02_areas/status_updates"
 mkdir -p "$WORKSPACE_DIR/02_areas/career"
 mkdir -p "$WORKSPACE_DIR/02_areas/learning"
 mkdir -p "$WORKSPACE_DIR/02_areas/team"
@@ -219,7 +219,7 @@ workspace/
 │   └── incubator/           # Ideas not ready to start
 ├── 01_projects/             # Active work with deadlines
 ├── 02_areas/                # Ongoing responsibilities
-│   ├── hpms/                # Highlights, Priorities updates
+│   ├── status_updates/      # Weekly updates, status reports
 │   ├── career/              # Career planning
 │   ├── learning/            # Learning notes
 │   └── team/                # Team-related notes
@@ -261,10 +261,61 @@ ${PROJECTS_TABLE}
 
 ## Slash Commands
 
-- \`/add-context\` — Route a URL or text to the right project's CLAUDE.md
+- \`/add-context\` — Route text (or a URL, if browser tools are available) to the right project's CLAUDE.md
 - \`/capture-idea\` — Save an idea to the incubator for later
 - \`/start-project\` — Create a new active project from a brain dump
 - \`/archive-project\` — Move a completed project to archives
+
+## What You Can Ask
+
+Beyond slash commands, the AI uses your context to help with everyday work. Try:
+
+- **"Draft a status update on [project]"** — pulls from the project's CLAUDE.md to write in your voice
+- **"What are my open items across all projects?"** — scans project files for Latest Updates and open items
+- **"Prep me for my 1:1 with [name]"** — checks people notes and project context for shared work
+- **"Summarize what happened this week on [project]"** — reads Latest Updates and meeting notes
+- **"Write a message to my team about [topic]"** — drafts in your writing style with relevant project context
+- **"What do you know about [person]?"** — pulls from \`03_resources/people/\` if a note exists
+
+The more context you add to your CLAUDE.md files, the better these work.
+
+## Integrations
+
+The workspace works standalone, but connecting external tools makes it more powerful. Cursor supports integrations via **MCP servers** (Model Context Protocol). Here are useful public ones:
+
+### Recommended
+
+| Integration | What it unlocks | MCP Server |
+|-------------|----------------|------------|
+| **Google Calendar** | \`/daily\`-style planning — AI reads your schedule and maps meetings to projects | [google-calendar-mcp](https://github.com/nspady/google-calendar-mcp) |
+| **Slack** | Scan channels for action items, draft messages in context | [slack-mcp](https://github.com/modelcontextprotocol/servers/tree/main/src/slack) |
+| **GitHub** | Track PRs, issues, and commits per project | [github-mcp](https://github.com/modelcontextprotocol/servers/tree/main/src/github) |
+| **Linear** | Sync tasks and issues with project context | [linear-mcp](https://github.com/jerhadf/linear-mcp-server) |
+| **Google Drive** | Read and reference Google Docs, Sheets | [gdrive-mcp](https://github.com/modelcontextprotocol/servers/tree/main/src/gdrive) |
+| **Notion** | Pull in pages and databases as project context | [notion-mcp](https://github.com/modelcontextprotocol/servers/tree/main/src/notion) |
+
+### How to add an integration
+
+1. Install the MCP server (usually \`npm install -g @modelcontextprotocol/server-<name>\`)
+2. Add it to your Cursor MCP config (\`~/.cursor/mcp.json\`)
+3. The AI will automatically have access to the new tools
+
+### What integrations enable
+
+With **Google Calendar** connected, you can build a daily planning workflow:
+- "What meetings do I have today?" → AI reads your calendar
+- "Map my meetings to my active projects" → AI cross-references attendees and topics
+- "What should I prep for?" → AI flags 1:1s, reviews, and presentations
+
+With **Slack** connected:
+- "Check #engineering for anything I need to respond to" → AI scans for action items
+- "Draft a reply to [person]'s message about [topic]" → uses project context
+
+With **GitHub/Linear** connected:
+- "What PRs are open on [project]?" → AI checks your repos
+- "Create an issue for [task]" → AI creates it with project context
+
+You don't need any integrations to start — the workspace is valuable with just the context files. Add integrations when you're ready to automate more.
 
 ## Writing Style
 

@@ -39,7 +39,7 @@ my-workspace/
 ├── 01_projects/           # Active work with deadlines
 │   └── PROJECT_TEMPLATE.md
 ├── 02_areas/              # Ongoing responsibilities (no end date)
-│   ├── hpms/              # Highlights, Priorities updates
+│   ├── status_updates/    # Weekly updates, status reports
 │   ├── career/            # Career planning
 │   ├── learning/          # Learning notes
 │   └── team/              # Team-related notes
@@ -53,7 +53,7 @@ my-workspace/
 
 | Command | What it does |
 |---------|-------------|
-| `/add-context` | Route a URL or text to the right project's CLAUDE.md |
+| `/add-context` | Route text (or a URL) to the right project's CLAUDE.md |
 | `/capture-idea` | Save an idea to the incubator for later |
 | `/start-project` | Create a new project from a brain dump |
 | `/archive-project` | Archive a completed project |
@@ -83,6 +83,42 @@ Open the workspace in Cursor and start a new chat. The agent should greet you wi
 - "What do you know about me?"
 - `/capture-idea "build an internal dashboard for team metrics"`
 - `/start-project` to create a new project interactively
+
+---
+
+## What You Can Ask
+
+Beyond slash commands, the AI uses your context for everyday work:
+
+- **"Draft a status update on [project]"** — writes in your voice using project context
+- **"What are my open items across all projects?"** — scans project files
+- **"Prep me for my 1:1 with [name]"** — checks people notes and shared project work
+- **"Summarize what happened this week on [project]"** — reads Latest Updates and meeting notes
+- **"Write a message to my team about [topic]"** — drafts in your writing style
+
+The more context in your CLAUDE.md files, the better these work.
+
+---
+
+## Integrations
+
+The workspace works standalone, but connecting external tools via **MCP servers** makes it more powerful.
+
+| Integration | What it unlocks | MCP Server |
+|-------------|----------------|------------|
+| **Google Calendar** | AI reads your schedule, maps meetings to projects | [google-calendar-mcp](https://github.com/nspady/google-calendar-mcp) |
+| **Slack** | Scan channels for action items, draft replies | [slack-mcp](https://github.com/modelcontextprotocol/servers/tree/main/src/slack) |
+| **GitHub** | Track PRs, issues, commits per project | [github-mcp](https://github.com/modelcontextprotocol/servers/tree/main/src/github) |
+| **Linear** | Sync tasks and issues with project context | [linear-mcp](https://github.com/jerhadf/linear-mcp-server) |
+| **Google Drive** | Read Google Docs and Sheets as context | [gdrive-mcp](https://github.com/modelcontextprotocol/servers/tree/main/src/gdrive) |
+| **Notion** | Pull pages and databases into project context | [notion-mcp](https://github.com/modelcontextprotocol/servers/tree/main/src/notion) |
+
+**To add an integration:**
+1. Install the MCP server (usually `npm install -g @modelcontextprotocol/server-<name>`)
+2. Add it to your Cursor MCP config (`~/.cursor/mcp.json`)
+3. The AI automatically gets access to the new tools
+
+You don't need integrations to start — add them when you want to automate more.
 
 ---
 
