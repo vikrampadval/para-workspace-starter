@@ -2,23 +2,151 @@
 set -e
 
 # PARA Workspace Initializer
-# Creates a PARA workspace with CLAUDE.md context files and Cursor skills.
+# Interactive setup that creates a PARA workspace with CLAUDE.md context files
+# and Cursor skills, guided step-by-step.
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo ""
-echo "╔══════════════════════════════════════════╗"
-echo "║   PARA Workspace Setup                   ║"
-echo "║   Persistent AI context for Cursor       ║"
-echo "╚══════════════════════════════════════════╝"
+echo "╔══════════════════════════════════════════════════╗"
+echo "║   PARA Workspace Setup                           ║"
+echo "║   Persistent AI context for Cursor + Claude      ║"
+echo "╚══════════════════════════════════════════════════╝"
+echo ""
+echo "This will walk you through setting up your workspace."
+echo "Takes about 5 minutes. You can always edit the files later."
 echo ""
 
-# --- Gather info ---
+# ============================================================
+# PHASE 1: About You
+# ============================================================
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "  STEP 1 of 5: About You"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
 
 read -p "Your name: " USER_NAME
-read -p "Your role (e.g. Product Manager, Engineer): " USER_ROLE
-read -p "Your team: " USER_TEAM
+read -p "Your role (e.g. Product Manager, Software Engineer): " USER_ROLE
+read -p "Your team or org: " USER_TEAM
+read -p "Your manager's name (or press Enter to skip): " USER_MANAGER
+read -p "Your timezone (e.g. US/Pacific, Europe/London) [UTC]: " USER_TZ
+USER_TZ="${USER_TZ:-UTC}"
 read -p "What are you focused on right now? (1 sentence): " USER_FOCUS
+
+echo ""
+
+# ============================================================
+# PHASE 2: Writing Style
+# ============================================================
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "  STEP 2 of 5: Writing Style"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "This helps the AI draft things that sound like you."
+echo ""
+
+read -p "How would you describe your communication style? (e.g. direct, formal, casual, detailed): " STYLE_TONE
+
+read -p "Do you prefer bullet points, numbered lists, or prose? [bullets]: " STYLE_FORMAT
+STYLE_FORMAT="${STYLE_FORMAT:-bullet points}"
+
+read -p "Do you start docs with a TL;DR / summary? (y/n) [y]: " STYLE_TLDR
+STYLE_TLDR="${STYLE_TLDR:-y}"
+
+read -p "Any phrases you naturally use? (comma-separated, or press Enter to skip): " STYLE_PHRASES
+
+read -p "Anything to avoid in drafts? (e.g. emojis, jargon, passive voice): " STYLE_AVOID
+
+echo ""
+
+# Build writing style block
+WRITING_STYLE="### Voice\n- **${STYLE_TONE^}** communication style\n- Prefers **${STYLE_FORMAT}** for structured content"
+
+if [[ "$STYLE_TLDR" == "y" || "$STYLE_TLDR" == "Y" ]]; then
+  WRITING_STYLE="$WRITING_STYLE\n- Lead with a **TL;DR** before going deep"
+fi
+
+if [[ -n "$STYLE_PHRASES" ]]; then
+  WRITING_STYLE="$WRITING_STYLE\n- Natural phrases: ${STYLE_PHRASES}"
+fi
+
+if [[ -n "$STYLE_AVOID" ]]; then
+  WRITING_STYLE="$WRITING_STYLE\n\n### Avoid\n- ${STYLE_AVOID}"
+fi
+
+# ============================================================
+# PHASE 3: Key Acronyms
+# ============================================================
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "  STEP 3 of 5: Key Acronyms & Terms"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "Add acronyms your team uses so the AI gets them right."
+echo "Format: ACRONYM = definition"
+echo "Type 'done' when finished (or press Enter to skip)."
+echo ""
+
+ACRONYMS=""
+while true; do
+  read -p "  Acronym (or 'done'): " ACRO_INPUT
+  if [[ "$ACRO_INPUT" == "done" || -z "$ACRO_INPUT" ]]; then
+    break
+  fi
+  read -p "  Definition: " ACRO_DEF
+  ACRONYMS="$ACRONYMS\n- **${ACRO_INPUT}**: ${ACRO_DEF}"
+  echo "    Added. Next? (or 'done')"
+done
+
+if [[ -z "$ACRONYMS" ]]; then
+  ACRONYMS="\n<!-- Add acronyms here as: -->\n<!-- - **ACRONYM**: What it stands for -->"
+fi
+
+echo ""
+
+# ============================================================
+# PHASE 4: First Project
+# ============================================================
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "  STEP 4 of 5: Your First Project"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "Let's set up your first active project."
+echo "(Press Enter to skip — you can create projects later with /start-project)"
+echo ""
+
+read -p "Project name (e.g. 'Website Redesign'): " PROJ_NAME
+
+PROJ_SLUG=""
+PROJ_DESC=""
+PROJ_STATUS=""
+PROJ_OVERVIEW=""
+
+if [[ -n "$PROJ_NAME" ]]; then
+  # Generate slug from name
+  PROJ_SLUG=$(echo "$PROJ_NAME" | tr '[:upper:]' '[:lower:]' | tr ' ' '_' | tr -cd 'a-z0-9_')
+
+  read -p "One-line description: " PROJ_DESC
+  read -p "What phase is it in? (e.g. planning, execution, launch): " PROJ_STATUS
+  read -p "Brief overview (2-3 sentences — what is it and why does it matter?): " PROJ_OVERVIEW
+  echo ""
+  echo "  Project will be created at: 01_projects/01_${PROJ_SLUG}/"
+fi
+
+echo ""
+
+# ============================================================
+# PHASE 5: Workspace Location
+# ============================================================
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "  STEP 5 of 5: Create Workspace"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+
 read -p "Where should the workspace be created? [./para-workspace]: " WORKSPACE_DIR
 WORKSPACE_DIR="${WORKSPACE_DIR:-./para-workspace}"
 
@@ -26,17 +154,34 @@ echo ""
 echo "Creating workspace at: $WORKSPACE_DIR"
 echo ""
 
-# --- Create PARA folder structure ---
+# ============================================================
+# CREATE FOLDER STRUCTURE
+# ============================================================
 
 mkdir -p "$WORKSPACE_DIR/00_inbox/notes"
 mkdir -p "$WORKSPACE_DIR/00_inbox/meetings"
 mkdir -p "$WORKSPACE_DIR/00_inbox/incubator"
 mkdir -p "$WORKSPACE_DIR/01_projects"
-mkdir -p "$WORKSPACE_DIR/02_areas"
+mkdir -p "$WORKSPACE_DIR/02_areas/hpms"
 mkdir -p "$WORKSPACE_DIR/03_resources/people"
 mkdir -p "$WORKSPACE_DIR/04_archives"
 
-# --- Write root CLAUDE.md ---
+# ============================================================
+# WRITE ROOT CLAUDE.md
+# ============================================================
+
+# Build manager line
+MANAGER_LINE=""
+if [[ -n "$USER_MANAGER" ]]; then
+  MANAGER_LINE="- **Manager**: ${USER_MANAGER}"
+fi
+
+# Build active projects table
+if [[ -n "$PROJ_NAME" ]]; then
+  PROJECTS_TABLE="| 01 | [${PROJ_NAME}](01_projects/01_${PROJ_SLUG}/CLAUDE.md) | \`project:${PROJ_SLUG}\` | ${PROJ_DESC} |"
+else
+  PROJECTS_TABLE="<!-- Add projects here with /start-project -->"
+fi
 
 cat > "$WORKSPACE_DIR/CLAUDE.md" << ROOTEOF
 # CLAUDE.md
@@ -57,10 +202,12 @@ At the start of every new session:
 - **Name**: ${USER_NAME}
 - **Role**: ${USER_ROLE}
 - **Team**: ${USER_TEAM}
+${MANAGER_LINE}
+- **Timezone**: ${USER_TZ}
 - **Focus**: ${USER_FOCUS}
 
 ### Key Acronyms & Terms
-<!-- Add acronyms your team uses — the agent will use them correctly -->
+$(echo -e "$ACRONYMS")
 
 ## Directory Structure
 
@@ -73,6 +220,7 @@ workspace/
 │   └── incubator/           # Ideas not ready to start
 ├── 01_projects/             # Active work with deadlines
 ├── 02_areas/                # Ongoing responsibilities
+│   └── hpms/                # Highlights, Priorities updates
 ├── 03_resources/            # Reference material
 │   └── people/              # Colleague notes
 └── 04_archives/             # Completed / inactive work
@@ -100,8 +248,7 @@ workspace/
 
 | # | Project | Tag | Description |
 |---|---------|-----|-------------|
-<!-- Add projects here as you create them -->
-<!-- | 01 | [Project Name](01_projects/01_project_slug/CLAUDE.md) | \`project:slug\` | One-line description | -->
+${PROJECTS_TABLE}
 
 ## Completed Projects
 
@@ -124,14 +271,7 @@ workspace/
 
 ## Writing Style
 
-<!-- How you write — the agent will match your voice in drafts -->
-<!-- Uncomment and edit the patterns that apply to you: -->
-
-<!-- - Direct and action-oriented — get to the point -->
-<!-- - Lead with a TL;DR before going deep -->
-<!-- - Use numbered lists for structured docs -->
-<!-- - Casual in 1:1s, more formal in group comms -->
-<!-- - Avoid corporate jargon -->
+$(echo -e "$WRITING_STYLE")
 
 ## AI Agent Instructions
 
@@ -208,7 +348,64 @@ ROOTEOF
 
 echo "  ✓ Root CLAUDE.md"
 
-# --- Write project CLAUDE.md template ---
+# ============================================================
+# CREATE FIRST PROJECT (if provided)
+# ============================================================
+
+if [[ -n "$PROJ_NAME" ]]; then
+  PROJ_DIR="$WORKSPACE_DIR/01_projects/01_${PROJ_SLUG}"
+  mkdir -p "$PROJ_DIR/docs"
+  mkdir -p "$PROJ_DIR/meetings"
+
+  cat > "$PROJ_DIR/CLAUDE.md" << PROJEOF
+# ${PROJ_NAME}
+
+**Project Tag**: \`project:${PROJ_SLUG}\`
+
+## Overview
+
+${PROJ_OVERVIEW}
+
+## Current Status
+
+**Phase**: ${PROJ_STATUS^}
+
+## Latest Updates
+
+<!-- Update this after key meetings or decisions. -->
+<!-- This is the most important section — the agent reads it for project context. -->
+
+## Key Deliverables
+
+| Name | Description |
+|------|-------------|
+<!-- | Deliverable name | What it is | -->
+
+## Key Stakeholders
+
+| Person | Role | Team |
+|--------|------|------|
+| ${USER_NAME} | ${USER_ROLE} | ${USER_TEAM} |
+<!-- Add more stakeholders as needed -->
+
+## Key Documents
+
+| Name | Description |
+|------|-------------|
+<!-- | [Doc title](url) | What's in it | -->
+
+## Project Files
+
+- \`docs/\` — Project documentation
+- \`meetings/\` — Meeting notes
+PROJEOF
+
+  echo "  ✓ Project: ${PROJ_NAME}"
+fi
+
+# ============================================================
+# WRITE PROJECT TEMPLATE
+# ============================================================
 
 cat > "$WORKSPACE_DIR/01_projects/PROJECT_TEMPLATE.md" << 'PROJEOF'
 # Project Name
@@ -243,9 +440,6 @@ cat > "$WORKSPACE_DIR/01_projects/PROJECT_TEMPLATE.md" << 'PROJEOF'
 |------|-------------|
 | [Doc title](url) | What's in it |
 
-## Open Tasks
-<!-- How to track tasks for this project -->
-
 ## Project Files
 
 - `docs/` — Project documentation
@@ -254,7 +448,9 @@ PROJEOF
 
 echo "  ✓ Project template"
 
-# --- Write Cursor skills ---
+# ============================================================
+# INSTALL CURSOR SKILLS
+# ============================================================
 
 SKILLS_TARGET="$HOME/.cursor/skills"
 mkdir -p "$SKILLS_TARGET"
@@ -485,31 +681,37 @@ EOF
 
 echo "  ✓ Cursor skills (9 commands installed to ~/.cursor/skills/)"
 
+# ============================================================
+# SUMMARY
+# ============================================================
+
 echo ""
-echo "╔══════════════════════════════════════════╗"
-echo "║   Setup complete!                        ║"
-echo "╚══════════════════════════════════════════╝"
+echo "╔══════════════════════════════════════════════════╗"
+echo "║   Setup complete!                                ║"
+echo "╚══════════════════════════════════════════════════╝"
+echo ""
+echo "Your workspace is ready at: $WORKSPACE_DIR"
+echo ""
+echo "What was created:"
+echo "  ✓ PARA folder structure (inbox, projects, areas, resources, archives)"
+echo "  ✓ Root CLAUDE.md with your profile, writing style, and acronyms"
+if [[ -n "$PROJ_NAME" ]]; then
+echo "  ✓ Project: ${PROJ_NAME} (01_projects/01_${PROJ_SLUG}/)"
+fi
+echo "  ✓ Project template for future projects"
+echo "  ✓ 9 slash commands installed to Cursor"
 echo ""
 echo "Next steps:"
 echo ""
 echo "  1. Open $WORKSPACE_DIR in Cursor"
-echo "  2. Edit CLAUDE.md — fill in Writing Style and Key Acronyms"
-echo "  3. Create your first project:"
-echo "     - Copy 01_projects/PROJECT_TEMPLATE.md to"
-echo "       01_projects/01_my_project/CLAUDE.md"
-echo "     - Fill in the project details"
-echo "     - Add it to the Active Projects table in root CLAUDE.md"
-echo "  4. Start a chat — the agent should greet you with your context"
+echo "  2. Start a chat — the agent should greet you with your context"
+echo "  3. Try these commands:"
+echo "     /daily            Build today's planner"
+echo "     /note             Quick capture a thought"
+echo "     /eod              End of day recap"
+echo "     /start-project    Create a new project"
+echo "     /add-context      Route info to a project"
 echo ""
-echo "Commands available:"
-echo "  /daily            Build today's planner"
-echo "  /note             Quick capture a thought"
-echo "  /eod              End of day recap"
-echo "  /add-context      Route info to a project"
-echo "  /capture-idea     Save an idea for later"
-echo "  /start-project    Create a new project"
-echo "  /archive-project  Archive a finished project"
-echo "  /prepare-meeting  Research + agenda for a meeting"
-echo "  /generate-hpm     Highlights/priorities update"
-echo "  /recap            Weekly work summary"
+echo "Tip: The more you fill in your CLAUDE.md, the better the AI gets."
+echo "     Start with Writing Style and Key Acronyms for the biggest impact."
 echo ""
