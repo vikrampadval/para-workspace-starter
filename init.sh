@@ -22,7 +22,7 @@ echo ""
 # ============================================================
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "  STEP 1 of 5: About You"
+echo "  STEP 1 of 6: About You"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
@@ -41,7 +41,7 @@ echo ""
 # ============================================================
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "  STEP 2 of 5: Writing Style"
+echo "  STEP 2 of 6: Writing Style"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "This helps the AI draft things that sound like you."
@@ -81,7 +81,7 @@ fi
 # ============================================================
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "  STEP 3 of 5: Key Acronyms & Terms"
+echo "  STEP 3 of 6: Key Acronyms & Terms"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "Add acronyms your team uses so the AI gets them right."
@@ -111,7 +111,7 @@ echo ""
 # ============================================================
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "  STEP 4 of 5: Your First Project"
+echo "  STEP 4 of 6: Your First Project"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "Let's set up your first active project."
@@ -139,11 +139,92 @@ fi
 echo ""
 
 # ============================================================
-# PHASE 5: Workspace Location
+# PHASE 5: Tools & Integrations
 # ============================================================
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "  STEP 5 of 5: Create Workspace"
+echo "  STEP 5 of 6: Tools & Integrations"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "Which tools do you use at work? The AI can integrate with these"
+echo "via MCP servers to read your calendar, messages, tasks, and docs."
+echo ""
+echo "Select all that apply (comma-separated numbers, or press Enter to skip):"
+echo ""
+echo "  Calendar & Meetings:"
+echo "    1) Google Calendar"
+echo "    2) Outlook / Microsoft 365"
+echo ""
+echo "  Messaging:"
+echo "    3) Slack"
+echo "    4) Microsoft Teams"
+echo "    5) Discord"
+echo ""
+echo "  Tasks & Projects:"
+echo "    6) GitHub Issues / Projects"
+echo "    7) Linear"
+echo "    8) Jira"
+echo "    9) Asana"
+echo "   10) Trello"
+echo ""
+echo "  Docs & Knowledge:"
+echo "   11) Google Drive (Docs, Sheets)"
+echo "   12) Notion"
+echo "   13) Confluence"
+echo ""
+read -p "Your tools (e.g. 1,3,6,11): " TOOLS_INPUT
+
+# Parse tool selections into arrays
+TOOLS_SELECTED=()
+TOOLS_SETUP=""
+
+if [[ -n "$TOOLS_INPUT" ]]; then
+  IFS=',' read -ra TOOL_NUMS <<< "$TOOLS_INPUT"
+  for num in "${TOOL_NUMS[@]}"; do
+    num=$(echo "$num" | tr -d ' ')
+    case $num in
+      1)  TOOLS_SELECTED+=("Google Calendar")
+          TOOLS_SETUP="$TOOLS_SETUP\n| Google Calendar | Read your schedule, map meetings to projects | [google-calendar-mcp](https://github.com/nspady/google-calendar-mcp) |" ;;
+      2)  TOOLS_SELECTED+=("Outlook / Microsoft 365")
+          TOOLS_SETUP="$TOOLS_SETUP\n| Outlook / M365 | Calendar and email integration | [outlook-mcp](https://github.com/modelcontextprotocol/servers) — check MCP server registry |" ;;
+      3)  TOOLS_SELECTED+=("Slack")
+          TOOLS_SETUP="$TOOLS_SETUP\n| Slack | Scan channels, draft replies with project context | [slack-mcp](https://github.com/modelcontextprotocol/servers/tree/main/src/slack) |" ;;
+      4)  TOOLS_SELECTED+=("Microsoft Teams")
+          TOOLS_SETUP="$TOOLS_SETUP\n| Microsoft Teams | Read messages, draft replies | Check [MCP server registry](https://github.com/modelcontextprotocol/servers) for community servers |" ;;
+      5)  TOOLS_SELECTED+=("Discord")
+          TOOLS_SETUP="$TOOLS_SETUP\n| Discord | Read channels, send messages | Check [MCP server registry](https://github.com/modelcontextprotocol/servers) for community servers |" ;;
+      6)  TOOLS_SELECTED+=("GitHub")
+          TOOLS_SETUP="$TOOLS_SETUP\n| GitHub | Track PRs, issues, commits per project | [github-mcp](https://github.com/modelcontextprotocol/servers/tree/main/src/github) |" ;;
+      7)  TOOLS_SELECTED+=("Linear")
+          TOOLS_SETUP="$TOOLS_SETUP\n| Linear | Sync tasks and issues with project context | [linear-mcp](https://github.com/jerhadf/linear-mcp-server) |" ;;
+      8)  TOOLS_SELECTED+=("Jira")
+          TOOLS_SETUP="$TOOLS_SETUP\n| Jira | Read and create issues, track sprints | [jira-mcp](https://github.com/modelcontextprotocol/servers) — check MCP server registry |" ;;
+      9)  TOOLS_SELECTED+=("Asana")
+          TOOLS_SETUP="$TOOLS_SETUP\n| Asana | Read tasks, projects, and workspaces | Check [MCP server registry](https://github.com/modelcontextprotocol/servers) for community servers |" ;;
+      10) TOOLS_SELECTED+=("Trello")
+          TOOLS_SETUP="$TOOLS_SETUP\n| Trello | Read boards, lists, and cards | Check [MCP server registry](https://github.com/modelcontextprotocol/servers) for community servers |" ;;
+      11) TOOLS_SELECTED+=("Google Drive")
+          TOOLS_SETUP="$TOOLS_SETUP\n| Google Drive | Read Google Docs and Sheets as context | [gdrive-mcp](https://github.com/modelcontextprotocol/servers/tree/main/src/gdrive) |" ;;
+      12) TOOLS_SELECTED+=("Notion")
+          TOOLS_SETUP="$TOOLS_SETUP\n| Notion | Pull pages and databases into project context | [notion-mcp](https://github.com/modelcontextprotocol/servers/tree/main/src/notion) |" ;;
+      13) TOOLS_SELECTED+=("Confluence")
+          TOOLS_SETUP="$TOOLS_SETUP\n| Confluence | Read wiki pages and spaces | Check [MCP server registry](https://github.com/modelcontextprotocol/servers) for community servers |" ;;
+    esac
+  done
+
+  echo ""
+  echo "  Selected: ${TOOLS_SELECTED[*]}"
+  echo "  Setup instructions will be added to your CLAUDE.md"
+fi
+
+echo ""
+
+# ============================================================
+# PHASE 6: Workspace Location
+# ============================================================
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "  STEP 6 of 6: Create Workspace"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
@@ -281,18 +362,8 @@ The more context you add to your CLAUDE.md files, the better these work.
 
 ## Integrations
 
-The workspace works standalone, but connecting external tools makes it more powerful. Cursor supports integrations via **MCP servers** (Model Context Protocol). Here are useful public ones:
-
-### Recommended
-
-| Integration | What it unlocks | MCP Server |
-|-------------|----------------|------------|
-| **Google Calendar** | \`/daily\`-style planning — AI reads your schedule and maps meetings to projects | [google-calendar-mcp](https://github.com/nspady/google-calendar-mcp) |
-| **Slack** | Scan channels for action items, draft messages in context | [slack-mcp](https://github.com/modelcontextprotocol/servers/tree/main/src/slack) |
-| **GitHub** | Track PRs, issues, and commits per project | [github-mcp](https://github.com/modelcontextprotocol/servers/tree/main/src/github) |
-| **Linear** | Sync tasks and issues with project context | [linear-mcp](https://github.com/jerhadf/linear-mcp-server) |
-| **Google Drive** | Read and reference Google Docs, Sheets | [gdrive-mcp](https://github.com/modelcontextprotocol/servers/tree/main/src/gdrive) |
-| **Notion** | Pull in pages and databases as project context | [notion-mcp](https://github.com/modelcontextprotocol/servers/tree/main/src/notion) |
+The workspace works standalone, but connecting external tools makes it more powerful.
+Cursor supports integrations via **MCP servers** (Model Context Protocol).
 
 ### How to add an integration
 
@@ -300,22 +371,19 @@ The workspace works standalone, but connecting external tools makes it more powe
 2. Add it to your Cursor MCP config (\`~/.cursor/mcp.json\`)
 3. The AI will automatically have access to the new tools
 
-### What integrations enable
+Browse available servers: [MCP Server Registry](https://github.com/modelcontextprotocol/servers)
 
-With **Google Calendar** connected, you can build a daily planning workflow:
-- "What meetings do I have today?" → AI reads your calendar
-- "Map my meetings to my active projects" → AI cross-references attendees and topics
-- "What should I prep for?" → AI flags 1:1s, reviews, and presentations
-
-With **Slack** connected:
-- "Check #engineering for anything I need to respond to" → AI scans for action items
-- "Draft a reply to [person]'s message about [topic]" → uses project context
-
-With **GitHub/Linear** connected:
-- "What PRs are open on [project]?" → AI checks your repos
-- "Create an issue for [task]" → AI creates it with project context
-
-You don't need any integrations to start — the workspace is valuable with just the context files. Add integrations when you're ready to automate more.
+### Your tools
+$(if [[ -n "$TOOLS_SETUP" ]]; then
+echo ""
+echo "| Tool | What it unlocks | MCP Server |"
+echo "|------|----------------|------------|"
+echo -e "$TOOLS_SETUP"
+else
+echo ""
+echo "<!-- No tools selected during setup. Add integrations later by finding MCP servers at: -->"
+echo "<!-- https://github.com/modelcontextprotocol/servers -->"
+fi)
 
 ## Writing Style
 
@@ -545,6 +613,9 @@ echo "  ✓ Project: ${PROJ_NAME} (01_projects/01_${PROJ_SLUG}/)"
 fi
 echo "  ✓ Project template for future projects"
 echo "  ✓ 4 slash commands installed to Cursor"
+if [[ ${#TOOLS_SELECTED[@]} -gt 0 ]]; then
+echo "  ✓ Integration setup guide for: ${TOOLS_SELECTED[*]}"
+fi
 echo ""
 echo "Next steps:"
 echo ""

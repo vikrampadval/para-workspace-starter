@@ -14,13 +14,14 @@ cd para-workspace-starter
 ./init.sh
 ```
 
-The script walks you through 5 steps:
+The script walks you through 6 steps:
 
 1. **About You** — name, role, team, manager, timezone, focus
 2. **Writing Style** — tone, format, phrases (so AI drafts sound like you)
 3. **Key Acronyms** — team-specific terms the AI should know
 4. **First Project** — set up your first active project (optional)
-5. **Workspace Location** — where to create the folder
+5. **Tools & Integrations** — select the tools you use (Slack, GitHub, Google Calendar, etc.) and get MCP setup links
+6. **Workspace Location** — where to create the folder
 
 Then open the created workspace folder in Cursor and start chatting.
 
