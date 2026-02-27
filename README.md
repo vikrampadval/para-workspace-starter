@@ -14,10 +14,13 @@ cd para-workspace-starter
 ./init.sh
 ```
 
-The script will:
-1. Ask for your name, role, team, and current focus
-2. Create the PARA folder structure with a pre-filled `CLAUDE.md`
-3. Install 9 slash commands as Cursor skills (`~/.cursor/skills/`)
+The script walks you through 5 steps:
+
+1. **About You** — name, role, team, manager, timezone, focus
+2. **Writing Style** — tone, format, phrases (so AI drafts sound like you)
+3. **Key Acronyms** — team-specific terms the AI should know
+4. **First Project** — set up your first active project (optional)
+5. **Workspace Location** — where to create the folder
 
 Then open the created workspace folder in Cursor and start chatting.
 
@@ -31,7 +34,6 @@ Then open the created workspace folder in Cursor and start chatting.
 my-workspace/
 ├── CLAUDE.md              # Root context file — the brain
 ├── 00_inbox/              # Quick capture, unsorted items
-│   ├── notes/             # Daily notes, quick thoughts
 │   ├── meetings/          # Meeting notes before filing
 │   └── incubator/         # Ideas not ready to start
 ├── 01_projects/           # Active work with deadlines
@@ -46,35 +48,22 @@ my-workspace/
 
 | Command | What it does |
 |---------|-------------|
-| `/daily` | Build today's planner — priorities, schedule, meeting context |
-| `/note` | Quick-capture a timestamped thought |
-| `/eod` | End-of-day recap — what got done, decisions, carryover |
-| `/add-context` | Route a URL or text to the right project |
-| `/capture-idea` | Save an idea to the incubator |
+| `/add-context` | Route a URL or text to the right project's CLAUDE.md |
+| `/capture-idea` | Save an idea to the incubator for later |
 | `/start-project` | Create a new project from a brain dump |
 | `/archive-project` | Archive a completed project |
-| `/prepare-meeting` | Research + agenda for a meeting |
-| `/generate-hpm` | Highlights/priorities update from recent work |
-| `/recap` | Weekly work summary |
 
 ---
 
 ## After Setup
 
-### 1. Edit your CLAUDE.md
+### 1. Review your CLAUDE.md
 
-The init script fills in the basics. Now invest 10 minutes on two sections:
+The init script fills in your profile, writing style, and acronyms based on your answers. Open `CLAUDE.md` and refine anything that needs more detail.
 
-**Writing Style** — This is what makes AI drafts sound like you. Document your patterns:
-- Do you lead with a TL;DR?
-- Bullet points or numbered lists?
-- Formal or casual?
-- Phrases you naturally use ("sounds good", "let's ship it", "keen")
-- Things to avoid (corporate jargon, emojis)
+**Writing Style** is the highest-impact section — this is what makes AI drafts sound like you instead of generic AI.
 
-**Key Acronyms** — Add the acronyms your team uses. The agent will use them correctly in drafts and conversations.
-
-### 2. Create your first project
+### 2. Create your first project (if you skipped it)
 
 ```bash
 mkdir -p 01_projects/01_my_project/docs 01_projects/01_my_project/meetings
@@ -87,8 +76,8 @@ Edit the project `CLAUDE.md` with your project's overview, status, stakeholders,
 
 Open the workspace in Cursor and start a new chat. The agent should greet you with your context. Try:
 - "What do you know about me?"
-- `/daily` to build your first daily planner
-- `/note "testing the quick capture"`
+- `/capture-idea "build an internal dashboard for team metrics"`
+- `/start-project` to create a new project interactively
 
 ---
 
@@ -104,19 +93,18 @@ Root CLAUDE.md              → Who you are, how you work
 
 The agent reads the root `CLAUDE.md` every session. When you work on a specific project, it reads the project-level `CLAUDE.md` for deeper context. Keep the root high-level; let project files carry the detail.
 
-### Daily Workflow
-
-1. **Morning**: `/daily` builds your planner with priorities, schedule, and meeting context
-2. **During the day**: `/note` captures thoughts; `/add-context` routes new info to projects
-3. **End of day**: `/eod` recaps what got done and seeds tomorrow's planner
-
 ### Project Lifecycle
 
-1. `/capture-idea` — save to incubator
-2. `/add-context` — accumulate context over time
-3. `/start-project` — promote to active project
-4. Work on it (update CLAUDE.md, take meeting notes, create docs)
-5. `/archive-project` — move to archives when done
+```
+/capture-idea  →  /add-context  →  /start-project  →  work  →  /archive-project
+  (incubator)    (accumulate)      (activate)                    (complete)
+```
+
+1. **`/capture-idea`** — save a rough idea to `00_inbox/incubator/`
+2. **`/add-context`** — paste URLs or text to build up context over time
+3. **`/start-project`** — promote to `01_projects/` with full folder structure
+4. **Work on it** — update the project CLAUDE.md as you go
+5. **`/archive-project`** — move to `04_archives/` when done
 
 ---
 
@@ -150,13 +138,13 @@ Stale context is worse than no context. The system gets better every day you use
 
 | I have... | Put it in... |
 |-----------|-------------|
-| A quick thought | `/note` (appends to daily note) |
 | Meeting notes for a project | `01_projects/XX_project/meetings/` |
 | Meeting notes (general) | `00_inbox/meetings/` |
-| An idea for later | `/capture-idea` |
-| Career/development notes | `02_areas/` |
+| An idea for later | `/capture-idea` → `00_inbox/incubator/` |
 | Notes on a colleague | `03_resources/people/firstname_lastname.md` |
 | A finished project | `/archive-project` → `04_archives/` |
+| Career/development notes | `02_areas/` |
+| Reference material | `03_resources/` |
 
 ---
 
@@ -174,8 +162,8 @@ Stale context is worse than no context. The system gets better every day you use
 
 ## Full Guide
 
-For the complete walkthrough with detailed command documentation, see [the full setup guide](docs/full_guide.md).
+For the complete walkthrough with detailed explanations, see [the full setup guide](docs/full_guide.md).
 
 ---
 
-*30 minutes to set up. Gets better every day you use it.*
+*5 minutes to set up. Gets better every day you use it.*
